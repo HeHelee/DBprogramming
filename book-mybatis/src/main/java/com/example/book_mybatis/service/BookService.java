@@ -2,21 +2,21 @@ package com.example.book_mybatis.service;
 
 import com.example.book_mybatis.domain.Book;
 import com.example.book_mybatis.entity.BookEntity;
-import com.example.book_mybatis.repository.MybatisBookRepository;
+import com.example.book_mybatis.repository.BookRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class BookService {
-    private final MybatisBookRepository bookRepository;
+    private final BookRepository bookRepository; //JPA 용
 
-    @Autowired
-    public BookService(MybatisBookRepository bookRepository) {
-        this.bookRepository = bookRepository;
+    public BookService(BookRepository bookRepository) {
+        this.bookRepository = bookRepository; //JPA용
     }
 
     /**
@@ -42,7 +42,7 @@ public class BookService {
         bookEntity.setPrice(bookForm.getPrice());
 
         List<Book.Simple> list = new ArrayList<>();
-        for (BookEntity bookEntity2 : bookRepository.findCond(bookEntity)) {
+        for (BookEntity bookEntity2 : bookRepository.findCond(bookEntity)) { //Mybatis와 JPA용
             Book.Simple book2 = new Book.Simple();
             book2.setId(bookEntity2.getId());
             book2.setName(bookEntity2.getName());
@@ -67,7 +67,7 @@ public class BookService {
         bookEntity.setName(updateForm.getName());
         bookEntity.setPublisher(updateForm.getPublisher());
         bookEntity.setPrice(updateForm.getPrice());
-        bookRepository.update(bookEntity);
+        bookRepository.save(bookEntity);
     }
 
     public void deleteBook(Long bookId) throws IllegalAccessException {
